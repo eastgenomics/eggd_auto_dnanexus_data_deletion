@@ -67,12 +67,17 @@ def tar_details(files):
 def main ():
     print(sys.argv[1])
     auth_token = get_credentials(sys.argv[1])
+    output = sys.argv[2]
 
     dx_login(auth_token)
 
     tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', 1728913405000)
 
-    print(tar_details(tars))
+    details = tar_details(tars)
+
+    with open(f"{output}", 'w') as file:
+        for i in details:
+            file.write(f'{i}\n')
 
 
     
