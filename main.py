@@ -47,6 +47,11 @@ def find_files(project, older_than):
     return(results)
 
 ##output tar file details
+def tar_details(files):
+    details = \
+    [f"{x['describe']['name']},{x['id']},{x['project']}" for x in files]
+
+    return details
 
 ##delete tar files
 
@@ -67,7 +72,7 @@ def main ():
 
     tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', 1728913405000)
 
-
+    print(tar_details(tars))
 
 
     
