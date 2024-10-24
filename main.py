@@ -34,6 +34,17 @@ def dx_login(token):
         print(err)        
 
 ##find tar files
+def find_files(project, older_than):
+    results = dx.api.system_find_data_objects(
+        input_params={
+            'name':{'regexp':'tar.gz$'},
+            'scope':{'project':project},
+            'folder':'/',
+            'describe':True,
+            'created':{'before':older_than}}
+    )["results"]
+
+    return(results)
 
 ##output tar file details
 
@@ -53,6 +64,9 @@ def main ():
     auth_token = get_credentials(sys.argv[1])
 
     dx_login(auth_token)
+
+    tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', 1728913405000)
+
 
 
 
