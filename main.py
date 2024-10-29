@@ -62,6 +62,15 @@ def find_files(project, older_than):
 
 ##output tar file details
 def tar_details(files):
+    """
+    a method for extracting the needed information from the tar file meta data
+
+    Parameters
+    ----------
+    files : list
+        the 'results' output from dx.api.system_find_data_objects() containing
+        dx data object meta data.
+    """
     details = \
     [f"{x['describe']['name']},{x['id']},{x['project']}" for x in files]
 
@@ -74,6 +83,10 @@ def tar_details(files):
 ##get date for deletion(6 months ago)
 ### TODO: need a better way of adjusting this
 def get_time_limit():
+    """
+    a method to get a timestamp in unix milliseconds
+
+    """
     #15778458 is 6 months in seconds, dx uses unix epoch in milliseconds
     # 86400 ia 1 day 
     return round(time.time() - 86400) * 1000
