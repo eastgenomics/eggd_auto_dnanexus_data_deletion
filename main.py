@@ -1,4 +1,5 @@
 #imports
+import argparse
 import dxpy as dx
 import logging
 import os
@@ -94,12 +95,47 @@ def get_time_limit():
 #inputs
 ## argumets or read from config?
 
+
+def parse_args():
+    """
+    parse command line arguments
+
+    Returns
+    -------
+
+    args : Namespace
+        Namespace of passed command line argument inputs
+    """
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        '--token-file',
+        help='a file containing dx login token'
+    )
+
+    parser.add_argument(
+        '--project',
+        help='DNANexus project id'
+    )
+
+    parser.add_argument(
+        '--output',
+        help='destination of output file containing DNANexus files to be deleted'
+    )
+
+    return parser.parse_args()
+
+
 #get/check credetials
 def main ():
-    print(sys.argv[1])
-    auth_token = get_credentials(sys.argv[1])
-    project=sys.argv[2]
-    output = sys.argv[3]
+
+    args = parse_args()
+
+    print(args.token_file)
+    auth_token = get_credentials(args.token_file)
+    project = args.project
+    output = args.output
 
     dx_login(auth_token)
 
