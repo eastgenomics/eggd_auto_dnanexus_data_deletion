@@ -92,8 +92,6 @@ class TestDeletionMethods(unittest.TestCase):
             ]
 
         files = find_files('fake-project', 86400 * 1000 )
-        print(files[0])
-        print(expectd_results)
         self.assertEqual([files[0]], expectd_results)
 
     # test tar details
