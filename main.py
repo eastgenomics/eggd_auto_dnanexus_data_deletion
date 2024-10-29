@@ -36,6 +36,18 @@ def dx_login(token):
 
 ##find tar files
 def find_files(project, older_than):
+    """
+    function to wrap dx api methods that can find
+    tar files older than a given date in unix epoch milliseconds
+
+    Parameters
+    ----------
+    project : str
+        DNAnexus project id
+
+    older_than : int
+        a unix epoch timestamp in milliseconds 
+    """
     print(f'older than:{older_than}')
     results = dx.api.system_find_data_objects(
         input_params={
