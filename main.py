@@ -61,8 +61,9 @@ def tar_details(files):
 ##get date for deletion(6 months ago)
 ### TODO: need a better way of adjusting this
 def get_time_limit():
-    #15778458 is 6 months in seconds, dx uses unix epoch 
-    return time.time() - 15778458
+    #15778458 is 6 months in seconds, dx uses unix epoch
+    # 86400 ia 1 day 
+    return round(time.time() - 86400)
 
 #inputs
 ## argumets or read from config?
@@ -71,13 +72,14 @@ def get_time_limit():
 def main ():
     print(sys.argv[1])
     auth_token = get_credentials(sys.argv[1])
-    output = sys.argv[2]
+    project=sys.argv[2]
+    output = sys.argv[3]
 
     dx_login(auth_token)
 
     #get old tar files
     timelimit = get_time_limit()
-    tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', timelimit)
+    tars = find_files(project, timelimit)
 
     details = tar_details(tars)
 
