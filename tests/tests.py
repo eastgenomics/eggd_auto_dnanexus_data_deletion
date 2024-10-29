@@ -5,7 +5,8 @@ import time
 
 from main import (
     get_time_limit,
-    find_files
+    find_files,
+    tar_details
 )
 
 class TestDeletionMethods(unittest.TestCase):
@@ -99,6 +100,32 @@ class TestDeletionMethods(unittest.TestCase):
     ##test csv structure
     ## independent test of object/tar file age?
 
+    def test_tar_details(self):
+
+        found_tars = [
+                {
+                "project": "project-XXXXXXXXX",
+                "id": "file-AAAAAAAAAAA",
+                "describe": {
+                    "id": "file-AAAAAAAAAAA",
+                    "project": "project-XXXXXXXXX",
+                    "class": "file",
+                    "name": "run.A_RUN_NAME.lane.all_004.tar.gz",
+                    "folder": "/fake_runfolder_01/runs",
+                    "created": 1728913404000,
+                    "modified": 1728913406925,
+                    "createdBy": {
+                    "user": "user-jsims"
+                    },
+                    "media": "application/gzip",
+                    "archivalState": "live",
+                }
+                }
+            ]
+
+        expected_details = ['run.A_RUN_NAME.lane.all_004.tar.gz,file-AAAAAAAAAAA,project-XXXXXXXXX']
+
+        self.assertEqual(tar_details(found_tars), expected_details)
 
     #test output of tar details
 
