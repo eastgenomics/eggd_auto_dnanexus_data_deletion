@@ -97,7 +97,7 @@ class TestDeletionMethods(unittest.TestCase):
 
     # test tar details
     ##test project
-    ##test csv structure
+    ##test csv format
     ## independent test of object/tar file age?
 
     def test_tar_details(self):
@@ -128,6 +128,8 @@ class TestDeletionMethods(unittest.TestCase):
         self.assertEqual(tar_details(found_tars), expected_details)
 
     #test output of tar details
+    ## test lines = n of tar files
+    ## test csv format
 
 
 
