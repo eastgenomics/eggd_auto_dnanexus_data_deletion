@@ -36,6 +36,7 @@ def dx_login(token):
 
 ##find tar files
 def find_files(project, older_than):
+    print(f'older than:{older_than}')
     results = dx.api.system_find_data_objects(
         input_params={
             'name':{'regexp':'tar.gz$'},
@@ -61,9 +62,9 @@ def tar_details(files):
 ##get date for deletion(6 months ago)
 ### TODO: need a better way of adjusting this
 def get_time_limit():
-    #15778458 is 6 months in seconds, dx uses unix epoch
+    #15778458 is 6 months in seconds, dx uses unix epoch in milliseconds
     # 86400 ia 1 day 
-    return round(time.time() - 86400)
+    return round(time.time() - 86400) * 1000
 
 #inputs
 ## argumets or read from config?
