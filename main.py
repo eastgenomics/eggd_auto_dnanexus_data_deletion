@@ -3,6 +3,7 @@ import dxpy as dx
 import logging
 import os
 import sys
+import time
 
 #functions
 
@@ -58,7 +59,10 @@ def tar_details(files):
 ##check date
 
 ##get date for deletion(6 months ago)
-
+### TODO: need a better way of adjusting this
+def get_time_limit():
+    #15778458 is 6 months in seconds, dx uses unix epoch 
+    return time.time() - 15778458
 
 #inputs
 ## argumets or read from config?
@@ -71,20 +75,16 @@ def main ():
 
     dx_login(auth_token)
 
-    tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', 1728913405000)
+    #get old tar files
+    timelimit = get_time_limit()
+    tars = find_files('project-Gv6PK7Q4Zbz2x97XFz85xP0x', timelimit)
 
     details = tar_details(tars)
 
+    #record files for deletion
     with open(f"{output}", 'w') as file:
         for i in details:
             file.write(f'{i}\n')
-
-
-    
-
-#get old tar files
-
-#record files for deletion
 
 if __name__=='__main__':
     main()
