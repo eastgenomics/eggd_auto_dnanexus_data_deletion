@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #imports
 import argparse
 import dxpy as dx
