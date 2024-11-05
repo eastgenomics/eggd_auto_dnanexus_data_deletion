@@ -56,7 +56,8 @@ def find_files(project, older_than):
             'scope':{'project':project},
             'folder':'/',
             'describe':True,
-            'created':{'before':older_than}}
+            'created':{'before':older_than},
+            'level':'VIEW'},
     )["results"]
 
     return(results)
