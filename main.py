@@ -52,7 +52,7 @@ def find_files(project, older_than):
     print(f'older than:{older_than}')
     results = dx.api.system_find_data_objects(
         input_params={
-            'name':{'regexp':'tar.gz$'},
+            'name':{'regexp':'^run.*.tar.gz$'},
             'scope':{'project':project},
             'folder':'/',
             'describe':True,
