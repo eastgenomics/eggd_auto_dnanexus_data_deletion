@@ -11,21 +11,27 @@ import time
 
 
 ##dx login
-def get_credentials(path):
+def get_credentials(path: str):
+    """reads DNAnexus token from file
+
+    Args:
+        path (str): path to a file with DNAnexus auth token.
+
+    Returns:
+        str: DNAnexus token stripped of newline characters
+    """
+
     with open(f"{path}", "r") as file:
         AUTH_TOKEN = file.read().rstrip()
 
     return AUTH_TOKEN
 
 
-def dx_login(token):
-    """
-    Function to check authenticating to DNAneuxs
+def dx_login(token: str):
+    """Function to set authentication for DNAneuxs
 
-    Parameters
-    ----------
-    token : str
-        DNAnexus authentication token
+    Args:
+        token (str): DNAnexus token_
     """
     try:
         DX_SECURITY_CONTEXT = {"auth_token_type": "Bearer", "auth_token": str(token)}
@@ -37,18 +43,17 @@ def dx_login(token):
 
 
 ##find tar files
-def find_files(project, older_than):
-    """
-    function to wrap dx api methods that can find
+def find_files(project: str, older_than: int):
+    """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
 
-    Parameters
-    ----------
-    project : str
-        DNAnexus project id
 
-    older_than : int
-        a unix epoch timestamp in milliseconds
+    Args:
+        project (str): DNAnexus project id
+        older_than (int): unix epoch time in milliseconds
+
+    Returns:
+        list: contains the meta dater for each tar file found
     """
     print(f"older than:{older_than}")
     results = dx.api.system_find_data_objects(
@@ -66,15 +71,16 @@ def find_files(project, older_than):
 
 
 ##output tar file details
-def tar_details(files):
-    """
-    a method for extracting the needed information from the tar file meta data
+def tar_details(files: list):
+    """a method for extracting the needed information from the tar file meta data
 
-    Parameters
-    ----------
-    files : list
-        the 'results' output from dx.api.system_find_data_objects() containing
-        dx data object meta data.
+
+    Args:
+        files (list): list of tar file metadata
+
+    Returns:
+        list: list where each item contains the name,
+              file id and project id for a corisponding file in the input list
     """
     details = [f"{x['describe']['name']},{x['id']},{x['project']}" for x in files]
 
@@ -89,9 +95,11 @@ def tar_details(files):
 ##get date for deletion(6 months ago)
 ### TODO: need a better way of adjusting this
 def get_time_limit():
-    """
-    a method to get a timestamp in unix milliseconds
+    """a method to get a timestamp in unix milliseconds
 
+
+    Returns:
+        int: unix epoch time in miliseconds
     """
     # 15778458 is 6 months in seconds, dx uses unix epoch in milliseconds
     # 86400 ia 1 day
@@ -103,14 +111,10 @@ def get_time_limit():
 
 
 def parse_args():
-    """
-    parse command line arguments
+    """_summary_
 
-    Returns
-    -------
-
-    args : Namespace
-        Namespace of passed command line argument inputs
+    Returns:
+        namespace: input command line arguments
     """
 
     parser = argparse.ArgumentParser()
