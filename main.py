@@ -11,7 +11,7 @@ import time
 
 
 ##dx login
-def get_credentials(path: str):
+def get_credentials(path: str) -> str:
     """reads DNAnexus token from file
 
     Args:
@@ -43,7 +43,7 @@ def dx_login(token: str):
 
 
 ##find tar files
-def find_files(project: str, older_than: int):
+def find_files(project: str, older_than: int) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
 
@@ -71,7 +71,7 @@ def find_files(project: str, older_than: int):
 
 
 ##output tar file details
-def tar_details(files: list):
+def tar_details(files: list) -> list:
     """a method for extracting the needed information from the tar file meta data
 
 
@@ -94,7 +94,7 @@ def tar_details(files: list):
 
 ##get date for deletion(6 months ago)
 ### TODO: need a better way of adjusting this
-def get_time_limit():
+def get_time_limit() -> int:
     """a method to get a timestamp in unix milliseconds
 
 
@@ -110,8 +110,9 @@ def get_time_limit():
 ## argumets or read from config?
 
 
-def parse_args():
-    """_summary_
+def parse_args() -> argparse.Namespace:
+    """parse command line arguments
+
 
     Returns:
         namespace: input command line arguments
