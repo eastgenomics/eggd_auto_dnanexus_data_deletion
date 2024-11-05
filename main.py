@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # imports
 import argparse
-import dxpy as dx
-import logging
-import os
-import sys
 import time
+
+import dxpy as dx
+
 
 # functions
 
