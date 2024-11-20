@@ -34,7 +34,9 @@ def dx_login(token: str):
         dx.set_security_context(DX_SECURITY_CONTEXT)
         print(dx.api.system_whoami())
     except dx.exceptions.InvalidAuthentication as err:
-        print(err)
+        raise dx.exceptions.InvalidAuthentication(
+            f"DNAnexus Authentication failed: {err}"
+        )
 
 
 ##find tar files
