@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
 from unittest.mock import patch
+import sys
 import time
 
 from main import get_time_limit, find_files, tar_details
@@ -10,7 +11,7 @@ class TestGetTimeLimit(unittest.TestCase):
 
     def test_time_is_itn(self):
         limit = get_time_limit()
-        assert type(limit) is int()
+        assert isinstance(limit, int)
 
     # test limit is in milliseconds?
 
@@ -20,7 +21,7 @@ class TestFindFiles(unittest.TestCase):
     ## mock/patch dx.api.system_find_data_objects
 
     @patch("main.dx.api.system_find_data_objects")
-    def filter_files_by_date(self, mock_find):
+    def test_filter_files_by_date(self, mock_find):
 
         now = round(time.time()) * 1000
 
@@ -92,7 +93,7 @@ class TestFindFiles(unittest.TestCase):
 
 
 class TestTarDetails(unittest.TestCase):
-    def csv_details_extraction(self):
+    def test_csv_details_extraction(self):
 
         found_tars = [
             {
