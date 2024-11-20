@@ -6,19 +6,21 @@ import time
 from main import get_time_limit, find_files, tar_details
 
 
-class TestDeletionMethods(unittest.TestCase):
+class TestGetTimeLimit(unittest.TestCase):
 
-    def test_get_time_limit(self):
+    def test_time_is_itn(self):
         limit = get_time_limit()
         assert type(limit) is int()
 
     # test limit is in milliseconds?
 
+
+class TestFindFiles(unittest.TestCase):
     # test find files
     ## mock/patch dx.api.system_find_data_objects
 
     @patch("main.dx.api.system_find_data_objects")
-    def test_find_files(self, mock_find):
+    def filter_files_by_date(self, mock_find):
 
         now = round(time.time()) * 1000
 
@@ -88,7 +90,9 @@ class TestDeletionMethods(unittest.TestCase):
     ##test csv format
     ## independent test of object/tar file age?
 
-    def test_tar_details(self):
+
+class TestTarDetails(unittest.TestCase):
+    def csv_details_extraction(self):
 
         found_tars = [
             {
