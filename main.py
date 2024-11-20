@@ -6,10 +6,6 @@ import time
 import dxpy as dx
 
 
-# functions
-
-
-##dx login
 def get_credentials(path: str) -> str:
     """reads DNAnexus token from file
 
