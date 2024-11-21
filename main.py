@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # imports
 import argparse
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import time
 
 import dxpy as dx
@@ -100,7 +102,10 @@ def get_time_limit() -> int:
     """
     # 15778458 is 6 months in seconds, dx uses unix epoch in milliseconds
     # 86400 ia 1 day
-    return round(time.time() - 86400) * 1000
+    now = datetime.now() - relativedelta(months=6)
+    limit = int(time.mktime(now.timetuple()))
+
+    return limit * 1000
 
 
 # inputs
