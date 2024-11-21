@@ -83,7 +83,7 @@ class TestFindFiles(unittest.TestCase):
             }
         ]
 
-        files = find_files("fake-project", 86400 * 1000)
+        files = find_files("fake-project", 1728913404001)
         self.assertEqual([files[0]], expectd_results)
 
     # test tar details
