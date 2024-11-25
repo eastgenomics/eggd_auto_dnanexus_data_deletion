@@ -55,17 +55,16 @@ def find_files(project: str, older_than: int) -> list:
         list: contains the meta dater for each tar file found
     """
     print(f"older than:{older_than}")
-    results = dx.api.system_find_data_objects(
-        input_params={
-            "name": {"regexp": "^run.*.tar.gz$"},
-            "scope": {"project": project},
-            "folder": "/",
-            "describe": True,
-            "created": {"before": older_than},
-            "level": "VIEW",
-        },
-    )["results"]
-
+    results = list(
+        dx.find_data_objects(
+            project=project,
+            name_mode="regexp",
+            name="^run.*.tar.gz$",
+            created_before=older_than,
+            describe={"fields": {"name": True, "id": True, "project": True}},
+        )
+    )
+    print(len(results))
     return results
 
 
