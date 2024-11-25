@@ -19,9 +19,9 @@ def get_credentials(path: str) -> str:
     """
 
     with open(f"{path}", "r") as file:
-        AUTH_TOKEN = file.read().rstrip()
+        auth_token = file.read().rstrip()
 
-    return AUTH_TOKEN
+    return auth_token
 
 
 def dx_login(token: str):
@@ -31,9 +31,9 @@ def dx_login(token: str):
         token (str): DNAnexus token_
     """
     try:
-        DX_SECURITY_CONTEXT = {"auth_token_type": "Bearer", "auth_token": str(token)}
+        dx_security_context = {"auth_token_type": "Bearer", "auth_token": str(token)}
 
-        dx.set_security_context(DX_SECURITY_CONTEXT)
+        dx.set_security_context(dx_security_context)
         print(dx.api.system_whoami())
     except dx.exceptions.InvalidAuthentication as err:
         raise dx.exceptions.InvalidAuthentication(
