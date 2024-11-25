@@ -9,7 +9,7 @@ from main import get_time_limit, find_files, tar_details
 
 class TestGetTimeLimit(unittest.TestCase):
 
-    def test_time_is_itn(self):
+    def test_time_is_int(self):
         limit = get_time_limit()
         assert isinstance(limit, int)
 
