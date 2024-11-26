@@ -72,7 +72,7 @@ def find_files(project: str, older_than: int) -> list:
 
 
 ##output tar file details
-def tar_details(files: list) -> list:
+def tar_details(files: list) -> pd.DataFrame:
     """a method for extracting the needed information from the tar file meta data
 
 
@@ -83,13 +83,19 @@ def tar_details(files: list) -> list:
         list: list where each item contains the name,
               file id and project id for a corisponding file in the input list
     """
+    name = []
+    file = []
+    project = []
+    size = []
+    for x in files:
+        name = name + [x["describe"]["name"]]
+        file = file + [x["id"]]
+        project = project + [x["project"]]
+        size = size + [x["describe"]["size"]]
+    data = pd.DataFrame({"name": name, "file": file, "project": project, "size": size})
 
-    details = [
-        f"{x['describe']['name']},{x['id']},{x['project']}, {x['describe']['size']}"
-        for x in files
-    ]
-
-    return details
+    print(f"Total size of data: {sizeof_fmt(data["size"].sum())}")
+    return data
 
 
 ##delete tar files
@@ -182,9 +188,7 @@ def main():
     details = tar_details(tars)
 
     # record files for deletion
-    with open(f"{output}", "w") as file:
-        for i in details:
-            file.write(f"{i}\n")
+    details.to_csv(output, header=False, index=False)
 
 
 if __name__ == "__main__":
