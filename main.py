@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import pandas as pd
 import time
 
 import dxpy as dx
@@ -61,7 +62,9 @@ def find_files(project: str, older_than: int) -> list:
             name_mode="regexp",
             name="^run.*.tar.gz$",
             created_before=older_than,
-            describe={"fields": {"name": True, "id": True, "project": True}},
+            describe={
+                "fields": {"name": True, "id": True, "project": True, "size": True}
+            },
         )
     )
     print(len(results))
@@ -80,7 +83,11 @@ def tar_details(files: list) -> list:
         list: list where each item contains the name,
               file id and project id for a corisponding file in the input list
     """
-    details = [f"{x['describe']['name']},{x['id']},{x['project']}" for x in files]
+
+    details = [
+        f"{x['describe']['name']},{x['id']},{x['project']}, {x['describe']['size']}"
+        for x in files
+    ]
 
     return details
 
@@ -131,6 +138,29 @@ def parse_args() -> argparse.Namespace:
     )
 
     return parser.parse_args()
+
+
+def sizeof_fmt(num) -> str:
+    """
+    Function to turn bytes to human readable file size format.
+
+    Taken from https://stackoverflow.com/questions/1094841/get-human-readable-version-of-file-size
+
+    Parameters
+    ----------
+    num : int
+        total size in bytes
+
+    Returns
+    -------
+    str
+        file size in human-readable format
+    """
+    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.2f}{unit}B"
+        num /= 1024.0
+    return f"{num:.2f}YiB"
 
 
 # get/check credetials
