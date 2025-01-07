@@ -17,7 +17,7 @@ class Test_DNAnexus_login_authenitication:
 
 
 class Test_file_retrival(unittest.TestCase):
-    # @skip("needs fixing")
+    # @skip("don't think this can be tested as it's just a wrapper for dx api")
     @patch("main.dx.find_data_objects")
     def test_found_files_are_older_than_age_limit(self, mock_find):
 
