@@ -7,7 +7,9 @@
         "output": "/home/joseph/TarDeletion/outputFromConfig.txt",
         "older_than_months": 6,
         "file_regexs": [
-            "^run.*.tar.gz$"
+            "^run.*.tar.gz$",
+            ".fastq.gz$",
+            ".bcl$"
         ],
         "describe": [ 
             "name",
