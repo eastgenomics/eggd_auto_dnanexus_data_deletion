@@ -45,7 +45,7 @@ def dx_login(token: str):
 
 
 ##find tar files
-def find_files(project: str, older_than: int) -> list:
+def find_files(project: str, older_than: int, name_pattern: str) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
 
@@ -62,7 +62,7 @@ def find_files(project: str, older_than: int) -> list:
         dx.find_data_objects(
             project=project,
             name_mode="regexp",
-            name="^run.*.tar.gz$",
+            name=name_pattern,
             created_before=older_than,
             describe={
                 "fields": {"name": True, "id": True, "project": True, "size": True}
@@ -177,6 +177,7 @@ def main():
         token_file = config["peramaters"]["token_file"]
         project = config["peramaters"]["project"]
         output = config["peramaters"]["output"]
+        file_regexs = config["peramaters"]["file_regexs"]
     except FileNotFoundError:
         print(f"Configuration file not found: {config_path}")
         exit(1)
@@ -192,12 +193,17 @@ def main():
         dx_login(auth_token)
 
     # get old tar files
-    timelimit = get_time_limit()
-    tars = find_files(project, timelimit)
+    details = pd.DataFrame()
+    for pattern in file_regexs:
+        timelimit = get_time_limit()
+        tars = find_files(project, timelimit, pattern)
 
-    details = tar_details(tars)
+        details = pd.concat([details, tar_details(tars)])
 
     # record files for deletion
+    print(
+        f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
+    )
     details.to_csv(output, header=False, index=False)
 
 
