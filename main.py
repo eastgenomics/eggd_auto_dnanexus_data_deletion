@@ -7,6 +7,7 @@ import pandas as pd
 import time
 
 import dxpy as dx
+import json
 
 
 def get_credentials(path: str) -> str:
@@ -31,6 +32,7 @@ def dx_login(token: str):
     Args:
         token (str): DNAnexus token_
     """
+    print(f"Authenticating with token: {token}")
     try:
         dx_security_context = {"auth_token_type": "Bearer", "auth_token": str(token)}
 
@@ -124,26 +126,18 @@ def get_time_limit() -> int:
 ## argumets or read from config?
 
 
-def parse_args() -> argparse.Namespace:
-    """parse command line arguments
+def parse_config(config_path: str) -> dict:
+    """parse configuration from a json file
 
+    Args:
+        config_path (str): path to the json config file
 
     Returns:
-        namespace: input command line arguments
+        dict: configuration parameters
     """
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--token-file", help="a file containing dx login token")
-
-    parser.add_argument("--project", help="DNANexus project id")
-
-    parser.add_argument(
-        "--output",
-        help="destination of output file containing DNANexus files to be deleted",
-    )
-
-    return parser.parse_args()
+    with open(config_path, "r") as file:
+        config = json.load(file)
+    return config
 
 
 def sizeof_fmt(num) -> str:
@@ -172,14 +166,30 @@ def sizeof_fmt(num) -> str:
 # get/check credetials
 def main():
 
-    args = parse_args()
+    # Read configuration from json file
+    config_path = (
+        "/home/joseph/TarDeletion/NGS_Tar_deletion/configs/StagingArea_config.json"
+    )
+    try:
+        config = parse_config(config_path)
 
-    print(args.token_file)
-    auth_token = get_credentials(args.token_file)
-    project = args.project
-    output = args.output
+        # assign inputs to variables
+        token_file = config["peramaters"]["token_file"]
+        project = config["peramaters"]["project"]
+        output = config["peramaters"]["output"]
+    except FileNotFoundError:
+        print(f"Configuration file not found: {config_path}")
+        exit(1)
+    except KeyError as e:
+        print(f"Missing configuration key: {e}")
+        exit(1)
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from the configuration file: {config_path}")
+        exit(1)
 
-    dx_login(auth_token)
+    with open(token_file, "r") as file:
+        auth_token = file.read().rstrip()
+        dx_login(auth_token)
 
     # get old tar files
     timelimit = get_time_limit()
