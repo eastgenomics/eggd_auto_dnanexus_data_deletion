@@ -32,7 +32,6 @@ def dx_login(token: str):
     Args:
         token (str): DNAnexus token_
     """
-    print(f"Authenticating with token: {token}")
     try:
         dx_security_context = {"auth_token_type": "Bearer", "auth_token": str(token)}
 
@@ -89,12 +88,20 @@ def tar_details(files: list) -> pd.DataFrame:
     file = []
     project = []
     size = []
+    data = pd.DataFrame()
     for x in files:
-        name = name + [x["describe"]["name"]]
-        file = file + [x["id"]]
-        project = project + [x["project"]]
-        size = size + [x["describe"]["size"]]
-    data = pd.DataFrame({"name": name, "file": file, "project": project, "size": size})
+        name = [x["describe"]["name"]]
+        file = [x["id"]]
+        project = [x["project"]]
+        size = [x["describe"]["size"]]
+        data = pd.concat(
+            [
+                data,
+                pd.DataFrame(
+                    {"name": name, "file": file, "project": project, "size": size}
+                ),
+            ]
+        )
 
     print(f"Total size of data: {sizeof_fmt(data["size"].sum())}")
     return data
