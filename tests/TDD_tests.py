@@ -10,14 +10,14 @@ import time
 from main import get_time_limit, find_files, tar_details
 
 
-class Test_DNAnexus_login_authenitication:
+class TestDnaNexusLoginAuthenitication:
     def test_time_is_int(self):
         limit = get_time_limit()
         assert isinstance(limit, int)
 
 
-class Test_file_retrival(unittest.TestCase):
-    # @skip("don't think this can be tested as it's just a wrapper for dx api")
+class TestFileRetrival(unittest.TestCase):
+    @skip("don't think this can be tested as it's just a wrapper for dx api")
     @patch("main.dx.find_data_objects")
     def test_found_files_are_older_than_age_limit(self, mock_find):
 
@@ -87,7 +87,7 @@ class Test_file_retrival(unittest.TestCase):
         self.assertEqual(results, expectd_results)
 
 
-class Test_file_data_extraction(unittest.TestCase):
+class TestFileDataExtraction(unittest.TestCase):
     def test_csv_details_extraction(self):
 
         found_tars = [
@@ -122,5 +122,5 @@ class Test_file_data_extraction(unittest.TestCase):
         assert_frame_equal(tar_details(found_tars), expected_details)
 
 
-class Test_write_file_details:
+class TestWriteFileDetails:
     pass
