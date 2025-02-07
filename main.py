@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import os
 import pandas as pd
 import time
 
@@ -174,9 +175,14 @@ def sizeof_fmt(num) -> str:
 def main():
 
     # Read configuration from json file
-    config_path = (
-        "/home/joseph/TarDeletion/NGS_Tar_deletion/configs/StagingArea_config.json"
-    )
+    IN_CONTAINER = os.environ.get("CONTAINER", False)
+
+    if IN_CONTAINER:
+        config_path = "/app/NGS_Tar_deletion/configs/StagingArea_config.json"
+    else:
+        config_path = (
+            "/home/joseph/TarDeletion/NGS_Tar_deletion/configs/StagingArea_config.json"
+        )
     try:
         config = parse_config(config_path)
 
