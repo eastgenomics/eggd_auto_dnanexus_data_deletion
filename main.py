@@ -85,24 +85,16 @@ def tar_details(files: list) -> pd.DataFrame:
         list: list where each item contains the name,
               file id and project id for a corisponding file in the input list
     """
-    name = []
-    file = []
-    project = []
-    size = []
-    data = pd.DataFrame()
-    for x in files:
-        name = [x["describe"]["name"]]
-        file = [x["id"]]
-        project = [x["project"]]
-        size = [x["describe"]["size"]]
-        data = pd.concat(
-            [
-                data,
-                pd.DataFrame(
-                    {"name": name, "file": file, "project": project, "size": size}
-                ),
-            ]
-        )
+    files = [
+        {
+            "file": x["id"],
+            "name": x["describe"]["name"],
+            "project": x["project"],
+            "size": x["describe"]["size"],
+        }
+        for x in files
+    ]
+    data = pd.DataFrame(files)
 
     print(f"Total size of data: {sizeof_fmt(data["size"].sum())}")
     return data
