@@ -74,7 +74,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
 
 
 ##output tar file details
-def tar_details(files: list) -> pd.DataFrame:
+def file_details(files: list) -> pd.DataFrame:
     """a method for extracting the needed information from the tar file meta data
 
 
@@ -203,7 +203,7 @@ def main():
         timelimit = get_time_limit()
         tars = find_files(project, timelimit, pattern)
 
-        details = pd.concat([details, tar_details(tars)])
+        details = pd.concat([details, file_details(tars)])
 
     # record files for deletion
     print(
