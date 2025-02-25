@@ -74,7 +74,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
 
 
 ##output file details
-def file_details(files: list) -> pd.DataFrame:
+def file_details(files: list, patterns: list) -> pd.DataFrame:
     """a method for extracting the needed information from the file meta data
 
 
@@ -95,7 +95,11 @@ def file_details(files: list) -> pd.DataFrame:
     ]
     data = pd.DataFrame(files)
 
-    print(f"Total size of data: {sizeof_fmt(data["size"].sum())}")
+    for i in patterns:
+        filtered_data = data[data["name"].str.contains(i)]
+        print(
+            f"Total size of data with pattern '{i}': {sizeof_fmt(filtered_data["size"].sum())}"
+        )
     return data
 
 
@@ -168,14 +172,21 @@ def main():
     # Read configuration from json file
     IN_CONTAINER = os.environ.get("CONTAINER", False)
 
-    if IN_CONTAINER:
-        config_path = "/app/NGS_Tar_deletion/configs/StagingArea_config.json"
-    else:
-        config_path = (
-            "/home/joseph/TarDeletion/NGS_Tar_deletion/configs/StagingArea_config.json"
-        )
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "-c",
+        "--config",
+        type=str,
+        help="Path to the configuration file",
+        required=True,
+    )
+    args = args.parse_args()
+
+    if not os.path.exists(args.config):
+        raise ValueError(f"Configuration file path '{args.config}' does not exist")
+
     try:
-        config = parse_config(config_path)
+        config = parse_config(args.config)
 
         # assign inputs to variables
         token_file = config["peramaters"]["token_file"]
@@ -183,13 +194,13 @@ def main():
         output = config["peramaters"]["output"]
         file_regexs = config["peramaters"]["file_regexs"]
     except FileNotFoundError:
-        print(f"Configuration file not found: {config_path}")
+        print(f"Configuration file not found: {args.config}")
         exit(1)
     except KeyError as e:
         print(f"Missing configuration key: {e}")
         exit(1)
     except json.JSONDecodeError:
-        print(f"Error decoding JSON from the configuration file: {config_path}")
+        print(f"Error decoding JSON from the configuration file: {args.config}")
         exit(1)
 
     with open(token_file, "r") as file:
@@ -197,12 +208,11 @@ def main():
         dx_login(auth_token)
 
     # get old tar files
-    details = pd.DataFrame()
-    for pattern in file_regexs:
-        timelimit = get_time_limit()
-        tars = find_files(project, timelimit, pattern)
+    # details = pd.DataFrame()
+    timelimit = get_time_limit()
+    details = find_files(project, timelimit, "|".join(file_regexs))
 
-        details = pd.concat([details, file_details(tars)])
+    details = file_details(details, file_regexs)
 
     # record files for deletion
     print(
