@@ -73,7 +73,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
     return results
 
 
-##output tar file details
+##output file details
 def file_details(files: list) -> pd.DataFrame:
     """a method for extracting the needed information from the tar file meta data
 
