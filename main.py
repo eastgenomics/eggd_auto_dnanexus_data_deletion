@@ -80,7 +80,8 @@ def file_details(files: list, patterns: list) -> pd.DataFrame:
 
 
     Args:
-        files (list): list of tar file metadata
+        files (list): list of tar file metadata.
+        patterns (list): list of regex patterns that was used to filter the files.
 
     Returns:
         pd.DataFrame: a dataframe containing the extracted meta data with a record per file found
