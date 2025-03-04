@@ -53,6 +53,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
     Args:
         project (str): DNAnexus project id
         older_than (int): unix epoch time in milliseconds
+        name_pattern (str): regex pattern to match the file names
 
     Returns:
         list: contains the meta dater for each tar file found
