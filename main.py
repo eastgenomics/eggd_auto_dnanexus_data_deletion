@@ -3,10 +3,12 @@
 import argparse
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import os
 import pandas as pd
 import time
 
 import dxpy as dx
+import json
 
 
 def get_credentials(path: str) -> str:
@@ -43,7 +45,7 @@ def dx_login(token: str):
 
 
 ##find tar files
-def find_files(project: str, older_than: int) -> list:
+def find_files(project: str, older_than: int, name_pattern: str) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
 
@@ -51,6 +53,7 @@ def find_files(project: str, older_than: int) -> list:
     Args:
         project (str): DNAnexus project id
         older_than (int): unix epoch time in milliseconds
+        name_pattern (str): regex pattern to match the file names
 
     Returns:
         list: contains the meta dater for each tar file found
@@ -60,7 +63,7 @@ def find_files(project: str, older_than: int) -> list:
         dx.find_data_objects(
             project=project,
             name_mode="regexp",
-            name="^run.*.tar.gz$",
+            name=name_pattern,
             created_before=older_than,
             describe={
                 "fields": {"name": True, "id": True, "project": True, "size": True}
@@ -71,30 +74,34 @@ def find_files(project: str, older_than: int) -> list:
     return results
 
 
-##output tar file details
-def tar_details(files: list) -> pd.DataFrame:
-    """a method for extracting the needed information from the tar file meta data
+##output file details
+def file_details(files: list, patterns: list) -> pd.DataFrame:
+    """a method for extracting the needed information from the file meta data
 
 
     Args:
-        files (list): list of tar file metadata
+        files (list): list of tar file metadata.
+        patterns (list): list of regex patterns that was used to filter the files.
 
     Returns:
-        list: list where each item contains the name,
-              file id and project id for a corisponding file in the input list
+        pd.DataFrame: a dataframe containing the extracted meta data with a record per file found
     """
-    name = []
-    file = []
-    project = []
-    size = []
-    for x in files:
-        name = name + [x["describe"]["name"]]
-        file = file + [x["id"]]
-        project = project + [x["project"]]
-        size = size + [x["describe"]["size"]]
-    data = pd.DataFrame({"name": name, "file": file, "project": project, "size": size})
+    files = [
+        {
+            "file": x["id"],
+            "name": x["describe"]["name"],
+            "project": x["project"],
+            "size": x["describe"]["size"],
+        }
+        for x in files
+    ]
+    data = pd.DataFrame(files)
 
-    print(f"Total size of data: {sizeof_fmt(data["size"].sum())}")
+    for i in patterns:
+        filtered_data = data[data["name"].str.contains(i)]
+        print(
+            f"Total size of data with pattern '{i}': {sizeof_fmt(filtered_data["size"].sum())}"
+        )
     return data
 
 
@@ -124,26 +131,18 @@ def get_time_limit() -> int:
 ## argumets or read from config?
 
 
-def parse_args() -> argparse.Namespace:
-    """parse command line arguments
+def parse_config(config_path: str) -> dict:
+    """parse configuration from a json file
 
+    Args:
+        config_path (str): path to the json config file
 
     Returns:
-        namespace: input command line arguments
+        dict: configuration parameters
     """
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("--token-file", help="a file containing dx login token")
-
-    parser.add_argument("--project", help="DNANexus project id")
-
-    parser.add_argument(
-        "--output",
-        help="destination of output file containing DNANexus files to be deleted",
-    )
-
-    return parser.parse_args()
+    with open(config_path, "r") as file:
+        config = json.load(file)
+    return config
 
 
 def sizeof_fmt(num) -> str:
@@ -172,22 +171,55 @@ def sizeof_fmt(num) -> str:
 # get/check credetials
 def main():
 
-    args = parse_args()
+    # Read configuration from json file
+    IN_CONTAINER = os.environ.get("CONTAINER", False)
 
-    print(args.token_file)
-    auth_token = get_credentials(args.token_file)
-    project = args.project
-    output = args.output
+    args = argparse.ArgumentParser()
+    args.add_argument(
+        "-c",
+        "--config",
+        type=str,
+        help="Path to the configuration file",
+        required=True,
+    )
+    args = args.parse_args()
 
-    dx_login(auth_token)
+    if not os.path.exists(args.config):
+        raise ValueError(f"Configuration file path '{args.config}' does not exist")
+
+    try:
+        config = parse_config(args.config)
+
+        # assign inputs to variables
+        token_file = config["peramaters"]["token_file"]
+        project = config["peramaters"]["project"]
+        output = config["peramaters"]["output"]
+        file_regexs = config["peramaters"]["file_regexs"]
+    except FileNotFoundError:
+        print(f"Configuration file not found: {args.config}")
+        exit(1)
+    except KeyError as e:
+        print(f"Missing configuration key: {e}")
+        exit(1)
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from the configuration file: {args.config}")
+        exit(1)
+
+    with open(token_file, "r") as file:
+        auth_token = file.read().rstrip()
+        dx_login(auth_token)
 
     # get old tar files
+    # details = pd.DataFrame()
     timelimit = get_time_limit()
-    tars = find_files(project, timelimit)
+    details = find_files(project, timelimit, "|".join(file_regexs))
 
-    details = tar_details(tars)
+    details = file_details(details, file_regexs)
 
     # record files for deletion
+    print(
+        f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
+    )
     details.to_csv(output, header=False, index=False)
 
 
