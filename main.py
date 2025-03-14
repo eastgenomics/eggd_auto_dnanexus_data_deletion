@@ -186,12 +186,16 @@ def main():
 
     if not os.path.exists(args.config):
         raise ValueError(f"Configuration file path '{args.config}' does not exist")
+    else:
+        try:
+            config = parse_config(args.config)
+        except json.JSONDecodeError:
+            raise ValueError(
+                f"Error decoding JSON from the configuration file: {args.config}"
+            )
 
     try:
-        config = parse_config(args.config)
-
         # assign inputs to variables
-        token_file = config["peramaters"]["token_file"]
         project = config["peramaters"]["project"]
         output = config["peramaters"]["output"]
         file_regexs = config["peramaters"]["file_regexs"]
@@ -205,9 +209,20 @@ def main():
         print(f"Error decoding JSON from the configuration file: {args.config}")
         exit(1)
 
-    with open(token_file, "r") as file:
-        auth_token = file.read().rstrip()
-        dx_login(auth_token)
+    # login to DNAnexus if not running in DNAnexus app
+    if os.environ["ENV"] != "nexusApp":
+
+        try:
+            token_file = config["peramaters"]["token_file"]
+            with open(token_file, "r") as file:
+                auth_token = file.read().rstrip()
+                dx_login(auth_token)
+        except KeyError as e:
+            print(f"Missing configuration file in config: {e}")
+            exit(1)
+        except FileNotFoundError as e:
+            print(f"Token file not found: {e}")
+            exit(1)
 
     # get old tar files
     # details = pd.DataFrame()
