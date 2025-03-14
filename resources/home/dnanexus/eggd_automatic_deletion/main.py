@@ -229,13 +229,17 @@ def main():
     timelimit = get_time_limit()
     details = find_files(project, timelimit, "|".join(file_regexs))
 
-    details = file_details(details, file_regexs)
+    if len(details) > 0:
+        details = file_details(details, file_regexs)
 
-    # record files for deletion
-    print(
-        f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
-    )
-    details.to_csv(output, header=False, index=False)
+        # record files for deletion
+        print(
+            f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
+        )
+        details.to_csv(output, header=False, index=False)
+    else:
+        with open(output, "w") as file:
+            file.write("No files found for deletion")
 
 
 if __name__ == "__main__":
