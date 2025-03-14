@@ -1,0 +1,45 @@
+{
+  "name": "eggd_automatic_deletion",
+  "title": "eggd_automatic_deletion",
+  "summary": "lists files in given project that meet age and file type criteria so they can be deleted after a given length of time",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "config_file",
+      "label": "config_file",
+      "help": "A configuration file that contains the criteria for selecting files to delete",
+      "class": "array:file",
+      "patterns": ["*.json"]
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "output_file",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "interpreter": "bash",
+    "file": "src/AutoDelete.sh",
+    "distribution": "Ubuntu",
+    "release": "24.04",
+    "version": "0"
+  },
+  "access": {
+    "project": "CONTRIBUTE"
+  },
+  "regionalOptions": {
+    "aws:eu-central-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x2"
+        }
+      }
+    }
+  }
+}
