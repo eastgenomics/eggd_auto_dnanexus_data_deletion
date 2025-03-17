@@ -31,7 +31,7 @@
     "version": "0"
   },
   "access": {
-    "project": "CONTRIBUTE"
+    "allProjects": "VIEW"
   },
   "regionalOptions": {
     "aws:eu-central-1": {
