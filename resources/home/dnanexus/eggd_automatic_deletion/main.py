@@ -210,7 +210,7 @@ def main():
         exit(1)
 
     # login to DNAnexus if not running in DNAnexus app
-    if os.environ("ENV", "No ENV varaible set, running localy") != "nexusApp":
+    if os.environ.get("ENV", "No ENV varaible set, running localy") != "nexusApp":
 
         try:
             token_file = config["peramaters"]["token_file"]
