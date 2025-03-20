@@ -9,7 +9,7 @@
       "name": "config_file",
       "label": "config_file",
       "help": "A configuration file that contains the criteria for selecting files to delete",
-      "class": "array:file",
+      "class": "file",
       "patterns": ["*.json"]
     }
   ],
