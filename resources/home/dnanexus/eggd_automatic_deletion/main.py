@@ -209,8 +209,8 @@ def main():
         print(f"Error decoding JSON from the configuration file: {args.config}")
         exit(1)
 
-    # login to DNAnexus if not running in DNAnexus app
-    if os.environ.get("ENV", "No ENV varaible set, running localy") != "nexusApp":
+    # login to DNAnexus if running in DNAnexus app
+    if os.path.exists("/home/dnanexus"):
 
         try:
             token_file = config["peramaters"]["token_file"]
