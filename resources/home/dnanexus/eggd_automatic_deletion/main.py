@@ -205,10 +205,7 @@ def main():
     except KeyError as e:
         print(f"Missing configuration key: {e}")
         exit(1)
-    except json.JSONDecodeError:
-        print(f"Error decoding JSON from the configuration file: {args.config}")
-        exit(1)
-
+    
     # login to DNAnexus if running in DNAnexus app
     if os.path.exists("/home/dnanexus"):
 
