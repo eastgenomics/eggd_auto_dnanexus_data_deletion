@@ -1,6 +1,6 @@
 {
-  "name": "eggd_automatic_deletion",
-  "title": "eggd_automatic_deletion",
+  "name": "eggd_auto_dnanexus_data_deletion",
+  "title": "eggd_auto_dnanexus_data_deletionon",
   "summary": "lists files in given project that meet age and file type criteria so they can be deleted after a given length of time",
   "dxapi": "1.0.0",
   "version": "0.0.1",
