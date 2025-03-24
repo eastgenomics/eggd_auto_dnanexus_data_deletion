@@ -10,8 +10,6 @@ main() {
     
     dx download "$config_file" -o config_file
 
-    export ENV=nexusApp
-
     python3 /home/dnanexus/eggd_automatic_deletion/main.py -c config_file
 
     output_file=$(dx upload /home/dnanexus/outputFromConfig.txt --brief)
