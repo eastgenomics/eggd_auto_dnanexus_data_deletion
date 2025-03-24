@@ -196,9 +196,9 @@ def main():
 
     try:
         # assign inputs to variables
-        project = config["peramaters"]["project"]
-        output = config["peramaters"]["output"]
-        file_regexs = config["peramaters"]["file_regexs"]
+        project = config["parameters"]["project"]
+        output = config["parameters"]["output"]
+        file_regexs = config["parameters"]["file_regexs"]
     except FileNotFoundError:
         print(f"Configuration file not found: {args.config}")
         exit(1)
@@ -210,7 +210,7 @@ def main():
     if os.path.exists("/home/dnanexus"):
 
         try:
-            token_file = config["peramaters"]["token_file"]
+            token_file = config["parameters"]["token_file"]
             with open(token_file, "r") as file:
                 auth_token = file.read().rstrip()
                 dx_login(auth_token)
