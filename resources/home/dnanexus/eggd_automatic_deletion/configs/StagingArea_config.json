@@ -1,0 +1,22 @@
+{
+    "name": "StagingArea52_upkeep",
+    "version": "0.1",
+    "peramaters": {
+        "project": "project-FpVG0G84X7kzq58g19vF1YJQ",
+        "token_file": "/home/joseph/TarDeletion/tarToken.txt",
+        "output": "/home/dnanexus/outputFromConfig.txt",
+        "older_than_months": 6,
+        "file_regexs": [
+            "^run.*.tar.gz$",
+            ".fastq.gz$",
+            ".bcl$"
+        ],
+        "describe": [ 
+            "name",
+            "id",
+            "project",
+            "size"
+        ] 
+        
+    }
+}
