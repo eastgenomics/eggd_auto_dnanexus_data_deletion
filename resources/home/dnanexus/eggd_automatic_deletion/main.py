@@ -57,7 +57,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
     Returns:
         list: contains the meta dater for each tar file found
     """
-    print(f"older than:{older_than}")
+    print(f"searching {project} for files older than {older_than}s with pattern(s) {name_pattern}")
     results = list(
         dx.find_data_objects(
             project=project,
