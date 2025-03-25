@@ -44,7 +44,6 @@ def dx_login(token: str):
         )
 
 
-##find tar files
 def find_files(project: str, older_than: int, name_pattern: str) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
@@ -74,7 +73,6 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
     return results
 
 
-##output file details
 def file_details(files: list, patterns: list) -> pd.DataFrame:
     """a method for extracting the needed information from the file meta data
 
@@ -105,13 +103,6 @@ def file_details(files: list, patterns: list) -> pd.DataFrame:
     return data
 
 
-##delete tar files
-
-##check date
-
-
-##get date for deletion(6 months ago)
-### TODO: need a better way of adjusting this
 def get_time_limit() -> int:
     """a method to get a timestamp in unix milliseconds
 
@@ -125,10 +116,6 @@ def get_time_limit() -> int:
     limit = int(time.mktime(now.timetuple()))
 
     return limit * 1000
-
-
-# inputs
-## argumets or read from config?
 
 
 def parse_config(config_path: str) -> dict:
@@ -168,11 +155,7 @@ def sizeof_fmt(num) -> str:
     return f"{num:.2f}YiB"
 
 
-# get/check credetials
 def main():
-
-    # Read configuration from json file
-    IN_CONTAINER = os.environ.get("CONTAINER", False)
 
     args = argparse.ArgumentParser()
     args.add_argument(
@@ -221,8 +204,6 @@ def main():
             print(f"Token file not found: {e}")
             exit(1)
 
-    # get old tar files
-    # details = pd.DataFrame()
     timelimit = get_time_limit()
     details = find_files(project, timelimit, "|".join(file_regexs))
 
