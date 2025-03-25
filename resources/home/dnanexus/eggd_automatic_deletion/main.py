@@ -69,7 +69,7 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
             },
         )
     )
-    print(len(results))
+    print(f'Found {len(results)} files matching search criteria')
     return results
 
 
