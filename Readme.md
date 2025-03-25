@@ -11,7 +11,8 @@ To monitor storage use and to identify files for deletion.
 
 ## What are the inputs?
 ### Required
-- `-iconfig_file` (`file`) a JSON configuration file
+- `-iconfig_file` (`file`) a JSON configuration file.
+        see repo for an example: https://github.com/eastgenomics/eggd_auto_dnanexus_data_deletion/blob/v0.1-initial_build/resources/home/dnanexus/eggd_automatic_deletion/configs/StagingArea_config.json
 
 ## What are the outputs?
 - `outputFromConfig.txt` - a CSV file where each column is a field returned by dxpy's describe function, filtered to the subset specified in the input config.
