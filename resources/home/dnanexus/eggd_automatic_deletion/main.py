@@ -2,13 +2,13 @@
 # imports
 import argparse
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
+import json
 import os
-import pandas as pd
 import time
 
+from dateutil.relativedelta import relativedelta
 import dxpy as dx
-import json
+import pandas as pd
 
 
 def get_credentials(path: str) -> str:
