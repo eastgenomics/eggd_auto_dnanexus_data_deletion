@@ -106,6 +106,8 @@ def file_details(files: list, patterns: list) -> pd.DataFrame:
 def get_time_limit(months_limit: int) -> int:
     """a method to get a timestamp in unix milliseconds
 
+    Args:
+        months_limit (int): number of months to go back and set the limit.    
 
     Returns:
         int: unix epoch time in miliseconds
