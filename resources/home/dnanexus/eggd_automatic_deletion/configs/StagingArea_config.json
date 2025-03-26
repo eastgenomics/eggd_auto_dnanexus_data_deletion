@@ -1,7 +1,7 @@
 {
     "name": "StagingArea52_upkeep",
     "version": "0.1",
-    "peramaters": {
+    "parameters": {
         "project": "project-FpVG0G84X7kzq58g19vF1YJQ",
         "token_file": "/home/joseph/TarDeletion/tarToken.txt",
         "output": "/home/dnanexus/outputFromConfig.txt",
