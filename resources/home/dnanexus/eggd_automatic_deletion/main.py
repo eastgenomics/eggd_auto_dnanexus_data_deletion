@@ -191,7 +191,7 @@ def main():
         exit(1)
     
     # login to DNAnexus if running in DNAnexus app
-    if os.path.exists("/home/dnanexus"):
+    if not os.path.exists("/home/dnanexus"):
 
         try:
             token_file = config["parameters"]["token_file"]
