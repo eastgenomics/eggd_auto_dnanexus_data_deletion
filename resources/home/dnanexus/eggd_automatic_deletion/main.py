@@ -103,7 +103,7 @@ def file_details(files: list, patterns: list) -> pd.DataFrame:
     return data
 
 
-def get_time_limit() -> int:
+def get_time_limit(months_limit: int) -> int:
     """a method to get a timestamp in unix milliseconds
 
 
@@ -112,7 +112,7 @@ def get_time_limit() -> int:
     """
     # 15778458 is 6 months in seconds, dx uses unix epoch in milliseconds
     # 86400 ia 1 day
-    now = datetime.now() - relativedelta(months=6)
+    now = datetime.now() - relativedelta(months=months_limit)
     limit = int(time.mktime(now.timetuple()))
 
     return limit * 1000
@@ -182,6 +182,7 @@ def main():
         project = config["parameters"]["project"]
         output = config["parameters"]["output"]
         file_regexs = config["parameters"]["file_regexs"]
+        older_than_months = config["parameters"]["older_than_months"]
     except FileNotFoundError:
         print(f"Configuration file not found: {args.config}")
         exit(1)
@@ -204,7 +205,7 @@ def main():
             print(f"Token file not found: {e}")
             exit(1)
 
-    timelimit = get_time_limit()
+    timelimit = get_time_limit(months_limit=older_than_months)
     details = find_files(project, timelimit, "|".join(file_regexs))
 
     if len(details) > 0:
