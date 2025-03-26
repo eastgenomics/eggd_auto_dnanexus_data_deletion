@@ -132,7 +132,7 @@ def parse_config(config_path: str) -> dict:
     return config
 
 
-def sizeof_fmt(num) -> str:
+def sizeof_fmt(num: int) -> str:
     """
     Function to turn bytes to human readable file size format.
 
