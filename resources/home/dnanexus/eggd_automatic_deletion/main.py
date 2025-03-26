@@ -182,7 +182,7 @@ def main():
     try:
         # assign inputs to variables
         project = config["parameters"]["project"]
-        output = config["parameters"]["output"]
+        output_dest = config["parameters"]["output"]
         file_regexs = config["parameters"]["file_regexs"]
         older_than_months = config["parameters"]["older_than_months"]
     except KeyError as e:
@@ -206,6 +206,7 @@ def main():
 
     timelimit = get_time_limit(months_limit=older_than_months)
     details = find_files(project, timelimit, "|".join(file_regexs))
+    output_name = f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
 
     if len(details) > 0:
         details = file_details(details, file_regexs)
@@ -214,9 +215,9 @@ def main():
         print(
             f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
         )
-        details.to_csv(output, header=False, index=False)
+        details.to_csv(f"{output_dest}/{output_name}", header=False, index=False)
     else:
-        with open(output, "w") as file:
+        with open(f"{output_dest}/{output_name}", "w") as file:
             file.write("No files found for deletion")
 
 
