@@ -217,8 +217,7 @@ def main():
         )
         details.to_csv(f"{output_dest}/{output_name}", header=False, index=False)
     else:
-        with open(f"{output_dest}/{output_name}", "w") as file:
-            file.write("No files found for deletion")
+            print("No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexs}")
 
 
 if __name__ == "__main__":
