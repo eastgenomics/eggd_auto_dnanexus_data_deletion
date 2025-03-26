@@ -168,7 +168,7 @@ def main():
     args = args.parse_args()
 
     if not os.path.exists(args.config):
-        raise ValueError(f"Configuration file path '{args.config}' does not exist")
+        raise FileNotFoundError(f"Configuration file path '{args.config}' does not exist")
     else:
         try:
             config = parse_config(args.config)
@@ -183,9 +183,6 @@ def main():
         output = config["parameters"]["output"]
         file_regexs = config["parameters"]["file_regexs"]
         older_than_months = config["parameters"]["older_than_months"]
-    except FileNotFoundError:
-        print(f"Configuration file not found: {args.config}")
-        exit(1)
     except KeyError as e:
         print(f"Missing configuration key: {e}")
         exit(1)
