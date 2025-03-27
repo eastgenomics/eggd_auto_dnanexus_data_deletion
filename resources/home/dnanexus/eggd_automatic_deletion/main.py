@@ -167,6 +167,14 @@ def main():
         help="Path to the configuration file",
         required=True,
     )
+    args.add_argument(
+        "-p",
+        "--project",
+        type=str,
+        help="DNAnexus project ID",
+        required=False,
+    )
+
     args = args.parse_args()
 
     if not os.path.exists(args.config):
@@ -181,7 +189,10 @@ def main():
 
     try:
         # assign inputs to variables
-        project = config["parameters"]["project"]
+        if args.project:
+            project = args.project
+        else:
+            project = config["parameters"]["project"]
         output_dest = config["parameters"]["output"]
         file_regexs = config["parameters"]["file_regexs"]
         older_than_months = config["parameters"]["older_than_months"]
