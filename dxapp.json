@@ -11,7 +11,15 @@
       "help": "A configuration file that contains the criteria for selecting files to delete",
       "class": "file",
       "patterns": ["*.json"]
+    },
+    {
+      "name": "project",
+      "label": "project",
+      "class": "string",
+      "optional": true,
+      "help": "The project to search for files to delete. overwrites project specified in config file"
     }
+    
   ],
   "outputSpec": [
     {

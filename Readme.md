@@ -14,6 +14,9 @@ To monitor storage use and to identify files for deletion.
 - `-iconfig_file` (`file`) a JSON configuration file.
         see repo for an example: https://github.com/eastgenomics/eggd_auto_dnanexus_data_deletion/blob/v0.1-initial_build/resources/home/dnanexus/eggd_automatic_deletion/configs/StagingArea_config.json
 
+### Optional
+- `-iproject` (`DNA nexus project id`) ID for the DNAnexus project ID (e.g. `project-xxxx`) which you want to scan for files.
+
 ## What are the outputs?
 - `outputFromConfig.txt` - a CSV file where each column is a field returned by dxpy's describe function, filtered to the subset specified in the input config.
 

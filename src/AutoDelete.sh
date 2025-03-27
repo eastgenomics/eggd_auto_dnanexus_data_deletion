@@ -10,7 +10,9 @@ main() {
     
     dx download "$config_file" -o config_file
 
-    python3 /home/dnanexus/eggd_automatic_deletion/main.py -c config_file
+    [ -n "$project" ] && project="--project ${project}" || unset project
+
+    python3 /home/dnanexus/eggd_automatic_deletion/main.py --config config_file $project 
 
 
 if [[ -s /home/dnanexus/*_files_to_delete_*.csv ]]; then

@@ -167,6 +167,14 @@ def main():
         help="Path to the configuration file",
         required=True,
     )
+    args.add_argument(
+        "-p",
+        "--project",
+        type=str,
+        help="DNAnexus project ID",
+        required=False,
+    )
+
     args = args.parse_args()
 
     if not os.path.exists(args.config):
@@ -181,7 +189,10 @@ def main():
 
     try:
         # assign inputs to variables
-        project = config["parameters"]["project"]
+        if args.project:
+            project = args.project
+        else:
+            project = config["parameters"]["project"]
         output_dest = config["parameters"]["output"]
         file_regexs = config["parameters"]["file_regexs"]
         older_than_months = config["parameters"]["older_than_months"]
@@ -217,7 +228,7 @@ def main():
         )
         details.to_csv(f"{output_dest}/{output_name}", header=False, index=False)
     else:
-            print("No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexs}")
+            print(f"No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexs}")
 
 
 if __name__ == "__main__":
