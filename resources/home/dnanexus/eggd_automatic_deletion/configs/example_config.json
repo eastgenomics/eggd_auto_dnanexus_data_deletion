@@ -2,8 +2,6 @@
     "name": "StagingArea52_upkeep",
     "version": "0.1",
     "parameters": {
-        "project": "project-FpVG0G84X7kzq58g19vF1YJQ",
-        "output": "/home/dnanexus/",
         "older_than_months": 6,
         "file_regexes": [
             "^run.*.tar.gz$",
