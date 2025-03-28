@@ -146,22 +146,19 @@ def main():
 
     if not os.path.exists(args.config):
         raise FileNotFoundError(f"Configuration file path '{args.config}' does not exist")
-    else:
-        try:
-            config = parse_config(args.config)
-        except json.JSONDecodeError:
-            raise ValueError(
-                f"Error decoding JSON from the configuration file: {args.config}"
-            )
 
     try:
-        # assign inputs to variables
-        if args.project:
-            project = args.project
-        else:
-            project = config["parameters"]["project"]
-        output_dest = config["parameters"]["output"]
-        file_regexs = config["parameters"]["file_regexs"]
+        config = parse_config(args.config)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Error decoding JSON from the configuration file: {e}")
+
+    try:
+        project = args.project or config["parameters"]["project"]
+        output_dest = config["parameters"].get("output", os.getcwd())
+        if "output" not in config["parameters"]:
+            print("No output destination provided, using current working directory")
+
+        file_regexes = config["parameters"]["file_regexs"]
         older_than_months = config["parameters"]["older_than_months"]
     except KeyError as e:
         print(f"Missing configuration key: {e}")
@@ -169,7 +166,7 @@ def main():
     
 
     timelimit = get_time_limit(months_limit=older_than_months)
-    details = find_files(project, timelimit, "|".join(file_regexs))
+    details = find_files(project, timelimit, "|".join(file_regexes))
     output_name = f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
 
     if len(details) > 0:
