@@ -11,39 +11,6 @@ import dxpy as dx
 import pandas as pd
 
 
-def get_credentials(path: str) -> str:
-    """reads DNAnexus token from file
-
-    Args:
-        path (str): path to a file with DNAnexus auth token.
-
-    Returns:
-        str: DNAnexus token stripped of newline characters
-    """
-
-    with open(f"{path}", "r") as file:
-        auth_token = file.read().rstrip()
-
-    return auth_token
-
-
-def dx_login(token: str):
-    """Function to set authentication for DNAneuxs
-
-    Args:
-        token (str): DNAnexus token_
-    """
-    try:
-        dx_security_context = {"auth_token_type": "Bearer", "auth_token": str(token)}
-
-        dx.set_security_context(dx_security_context)
-        print(dx.api.system_whoami())
-    except dx.exceptions.InvalidAuthentication as err:
-        raise dx.exceptions.InvalidAuthentication(
-            f"DNAnexus Authentication failed: {err}"
-        )
-
-
 def find_files(project: str, older_than: int, name_pattern: str) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
@@ -200,20 +167,6 @@ def main():
         print(f"Missing configuration key: {e}")
         exit(1)
     
-    # login to DNAnexus if running in DNAnexus app
-    if not os.path.exists("/home/dnanexus"):
-
-        try:
-            token_file = config["parameters"]["token_file"]
-            with open(token_file, "r") as file:
-                auth_token = file.read().rstrip()
-                dx_login(auth_token)
-        except KeyError as e:
-            print(f"Missing configuration file in config: {e}")
-            exit(1)
-        except FileNotFoundError as e:
-            print(f"Token file not found: {e}")
-            exit(1)
 
     timelimit = get_time_limit(months_limit=older_than_months)
     details = find_files(project, timelimit, "|".join(file_regexs))
