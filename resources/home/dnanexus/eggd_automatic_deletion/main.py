@@ -170,7 +170,7 @@ def main():
     output_name = f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
 
     if len(details) > 0:
-        details = file_details(details, file_regexs)
+        details = file_details(details, file_regexes)
 
         # record files for deletion
         print(
