@@ -11,39 +11,6 @@ import dxpy as dx
 import pandas as pd
 
 
-def get_credentials(path: str) -> str:
-    """reads DNAnexus token from file
-
-    Args:
-        path (str): path to a file with DNAnexus auth token.
-
-    Returns:
-        str: DNAnexus token stripped of newline characters
-    """
-
-    with open(f"{path}", "r") as file:
-        auth_token = file.read().rstrip()
-
-    return auth_token
-
-
-def dx_login(token: str):
-    """Function to set authentication for DNAneuxs
-
-    Args:
-        token (str): DNAnexus token_
-    """
-    try:
-        dx_security_context = {"auth_token_type": "Bearer", "auth_token": str(token)}
-
-        dx.set_security_context(dx_security_context)
-        print(dx.api.system_whoami())
-    except dx.exceptions.InvalidAuthentication as err:
-        raise dx.exceptions.InvalidAuthentication(
-            f"DNAnexus Authentication failed: {err}"
-        )
-
-
 def find_files(project: str, older_than: int, name_pattern: str) -> list:
     """function to wrap dx api methods that can find
     tar files older than a given date in unix epoch milliseconds
@@ -179,44 +146,27 @@ def main():
 
     if not os.path.exists(args.config):
         raise FileNotFoundError(f"Configuration file path '{args.config}' does not exist")
-    else:
-        try:
-            config = parse_config(args.config)
-        except json.JSONDecodeError:
-            raise ValueError(
-                f"Error decoding JSON from the configuration file: {args.config}"
-            )
 
     try:
-        # assign inputs to variables
-        if args.project:
-            project = args.project
-        else:
-            project = config["parameters"]["project"]
-        output_dest = config["parameters"]["output"]
-        file_regexs = config["parameters"]["file_regexs"]
+        config = parse_config(args.config)
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Error decoding JSON from the configuration file: {e}")
+
+    try:
+        project = args.project or config["parameters"]["project"]
+        output_dest = config["parameters"].get("output", os.getcwd())
+        if "output" not in config["parameters"]:
+            print("No output destination provided, using current working directory")
+
+        file_regexes = config["parameters"]["file_regexes"]
         older_than_months = config["parameters"]["older_than_months"]
     except KeyError as e:
         print(f"Missing configuration key: {e}")
         exit(1)
     
-    # login to DNAnexus if running in DNAnexus app
-    if not os.path.exists("/home/dnanexus"):
-
-        try:
-            token_file = config["parameters"]["token_file"]
-            with open(token_file, "r") as file:
-                auth_token = file.read().rstrip()
-                dx_login(auth_token)
-        except KeyError as e:
-            print(f"Missing configuration file in config: {e}")
-            exit(1)
-        except FileNotFoundError as e:
-            print(f"Token file not found: {e}")
-            exit(1)
 
     timelimit = get_time_limit(months_limit=older_than_months)
-    details = find_files(project, timelimit, "|".join(file_regexs))
+    details = find_files(project, timelimit, "|".join(file_regexes))
     output_name = f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
 
     if len(details) > 0:
@@ -228,7 +178,7 @@ def main():
         )
         details.to_csv(f"{output_dest}/{output_name}", header=False, index=False)
     else:
-            print(f"No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexs}")
+            print(f"No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexes}")
 
 
 if __name__ == "__main__":
