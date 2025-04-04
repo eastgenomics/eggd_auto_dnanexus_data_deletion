@@ -24,7 +24,9 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
     Returns:
         list: contains the meta dater for each tar file found
     """
-    print(f"searching {project} for files older than {older_than}s with pattern(s) {name_pattern}")
+    print(
+        f"searching {project} for files older than {older_than}s with pattern(s) {name_pattern}"
+    )
     results = list(
         dx.find_data_objects(
             project=project,
@@ -32,11 +34,16 @@ def find_files(project: str, older_than: int, name_pattern: str) -> list:
             name=name_pattern,
             created_before=older_than,
             describe={
-                "fields": {"name": True, "id": True, "project": True, "size": True}
+                "fields": {
+                    "name": True,
+                    "id": True,
+                    "project": True,
+                    "size": True,
+                }
             },
         )
     )
-    print(f'Found {len(results)} files matching search criteria')
+    print(f"Found {len(results)} files matching search criteria")
     return results
 
 
@@ -74,7 +81,7 @@ def get_time_limit(months_limit: int) -> int:
     """a method to get a timestamp in unix milliseconds
 
     Args:
-        months_limit (int): number of months to go back and set the limit.    
+        months_limit (int): number of months to go back and set the limit.
 
     Returns:
         int: unix epoch time in miliseconds
@@ -145,29 +152,36 @@ def main():
     args = args.parse_args()
 
     if not os.path.exists(args.config):
-        raise FileNotFoundError(f"Configuration file path '{args.config}' does not exist")
+        raise FileNotFoundError(
+            f"Configuration file path '{args.config}' does not exist"
+        )
 
     try:
         config = parse_config(args.config)
     except json.JSONDecodeError as e:
-        raise ValueError(f"Error decoding JSON from the configuration file: {e}")
+        raise ValueError(
+            f"Error decoding JSON from the configuration file: {e}"
+        )
 
     try:
         project = args.project or config["parameters"]["project"]
         output_dest = config["parameters"].get("output", os.getcwd())
         if "output" not in config["parameters"]:
-            print("No output destination provided, using current working directory")
+            print(
+                f"No output destination provided, using current working directory: {output_dest}"
+            )
 
         file_regexes = config["parameters"]["file_regexes"]
         older_than_months = config["parameters"]["older_than_months"]
     except KeyError as e:
         print(f"Missing configuration key: {e}")
         exit(1)
-    
 
     timelimit = get_time_limit(months_limit=older_than_months)
     details = find_files(project, timelimit, "|".join(file_regexes))
-    output_name = f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
+    output_name = (
+        f"{project}_files_to_delete_{datetime.now().strftime('%y%m%d')}.csv"
+    )
 
     if len(details) > 0:
         details = file_details(details, file_regexes)
@@ -176,9 +190,14 @@ def main():
         print(
             f"Total size of data with all file types: {sizeof_fmt(details["size"].sum())}"
         )
-        details.to_csv(f"{output_dest}/{output_name}", header=False, index=False)
+        print(f"writing file details to {output_dest}/{output_name}")
+        details.to_csv(
+            f"{output_dest}/{output_name}", header=False, index=False
+        )
     else:
-            print(f"No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexes}")
+        print(
+            f"No files found for deletion in {project} older than {older_than_months} months and matching the regex pattern(s) {file_regexes}"
+        )
 
 
 if __name__ == "__main__":
